@@ -6,6 +6,8 @@ const componentsRouter = require("./routes/components.js");
 const methodsRouter = require("./routes/methods.js");
 const recipesRouter = require("./routes/recipes");
 const instructionsRouter = require("./routes/instructions");
+const PORT = process.env.PORT;
+const MONGO_URL = process.env.MONGO_URL || process.env.MONGO_URL_LOCAL;
 
 // === Подключаем маршруты ===
 const uploadRouter = require("./routes/upload");
@@ -21,7 +23,7 @@ app.use("/api/instructions", instructionsRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/upload", uploadRouter);
 
-mongoose.connect("mongodb://127.0.0.1:27017/cocktails", {
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -30,10 +32,5 @@ mongoose.connection.once("open", () => {
   console.log("✅ Подключено к MongoDB");
 });
 
-// ==== ROUTES ====
-
-
-
 // --- Запуск ---
-const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Сервер запущен на http://localhost:${PORT}`));
