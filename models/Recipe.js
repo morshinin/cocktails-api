@@ -17,6 +17,7 @@ const recipeSchema = new mongoose.Schema({
     enum: ["Classic", "Signature"],
     default: "Signature",
   },
+  image: { type: String },
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);
