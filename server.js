@@ -25,6 +25,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/upload", uploadRouter);
 
 mongoose.connect(MONGO_URL, {
+  dbName: "cocktails",
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
