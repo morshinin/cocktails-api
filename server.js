@@ -8,7 +8,7 @@ const methodsRouter = require("./routes/methods.js");
 const recipesRouter = require("./routes/recipes");
 const instructionsRouter = require("./routes/instructions");
 const PORT = process.env.PORT;
-const MONGO_URL = process.env.MONGO_URL_LOCAL;
+const MONGO_URL = process.env.MONGO_URL;
 
 // === Подключаем маршруты ===
 const uploadRouter = require("./routes/upload");
