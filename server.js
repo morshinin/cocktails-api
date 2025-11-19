@@ -7,6 +7,9 @@ const componentsRouter = require("./routes/components.js");
 const methodsRouter = require("./routes/methods.js");
 const recipesRouter = require("./routes/recipes");
 const instructionsRouter = require("./routes/instructions");
+const authRouter = require("./routes/auth");
+const venueRouter = require("./routes/venues");
+
 const PORT = process.env.PORT;
 const MONGO_URL = process.env.MONGO_URL;
 
@@ -23,6 +26,8 @@ app.use("/api/instructions", instructionsRouter);
 // === Делаем папку uploads доступной ===
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/upload", uploadRouter);
+app.use("/auth", authRouter);
+app.use("/venues", venueRouter);
 
 mongoose.connect(MONGO_URL, {
   dbName: "cocktails",
