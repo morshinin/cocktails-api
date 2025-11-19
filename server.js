@@ -26,7 +26,7 @@ app.use("/api/instructions", instructionsRouter);
 // === Делаем папку uploads доступной ===
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/upload", uploadRouter);
-app.use("/auth", authRouter);
+app.use("/api", authRouter);
 app.use("/venues", venueRouter);
 
 mongoose.connect(MONGO_URL, {
