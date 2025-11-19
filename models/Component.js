@@ -5,6 +5,7 @@ const componentSchema = new mongoose.Schema({
   category: { type: String, default: "" }, // 🏷 категория
   description: { type: String, default: "" }, // 🧾 описание
   image: { type: String, default: "" }, // 🖼 ссылка на изображение
+  venueId: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
 });
 
 module.exports = mongoose.model("Component", componentSchema);
