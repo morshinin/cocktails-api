@@ -18,6 +18,7 @@ const recipeSchema = new mongoose.Schema({
     default: "Signature",
   },
   image: { type: String },
+  venueId: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);
