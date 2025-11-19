@@ -64,3 +64,13 @@ module.exports.login = async (req, res) => {
     }
   });
 };
+
+module.exports.getProfile = async (req, res) => {
+  res.json({
+    user: {
+      email: req.user.email,
+      role: req.user.role,
+      organizationId: req.user.organizationId,
+    }
+  });
+};
