@@ -6,7 +6,10 @@ const router = express.Router();
 // Получить все рецепты
 router.get("/", async (req, res) => {
   try {
-    const recipes = await Recipe.find();
+    const { venueId } = req.query;
+    if (!venueId) return res.status(400).json({ error: "Venue ID is required" });
+
+    const recipes = await Recipe.find({ venueId });
     res.json(recipes);
   } catch (err) {
     res.status(500).json({ error: err.message });
