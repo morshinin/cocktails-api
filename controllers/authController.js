@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Organization = require("../models/Organization");
+const Venue = require("../models/Venue");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -66,11 +67,23 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.getProfile = async (req, res) => {
-  res.json({
-    user: {
-      email: req.user.email,
-      role: req.user.role,
-      organizationId: req.user.organizationId,
-    }
-  });
+  try {
+    const user = req.user;
+    const organization = await Organization.findById(user.organizationId);
+    const venues = await Venue.find({ organizationId: user.organizationId });
+
+    res.json({
+      user: {
+        email: user.email,
+        role: user.role,
+        organizationId: user.organizationId,
+        name: user.name,
+      },
+      organization,
+      venues
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching profile" });
+  }
 };
