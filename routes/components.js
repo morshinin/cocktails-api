@@ -5,7 +5,10 @@ const Component = require("../models/Component");
 // Получить все компоненты
 router.get("/", async (req, res) => {
   try {
-    const components = await Component.find();
+    const { venueId } = req.query;
+    if (!venueId) return res.status(400).json({ error: "Venue ID is required" });
+
+    const components = await Component.find({ venueId });
     res.json(components);
   } catch (err) {
     res.status(500).json({ error: err.message });

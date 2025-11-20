@@ -7,7 +7,10 @@ const router = express.Router();
 // Получить все методы
 router.get("/", async (req, res) => {
   try {
-    const methods = await Method.find().sort({ name: 1 });
+    const { venueId } = req.query;
+    if (!venueId) return res.status(400).json({ message: "Venue ID is required" });
+
+    const methods = await Method.find({ venueId }).sort({ name: 1 });
     res.json(methods);
   } catch (e) {
     res.status(500).json({ message: "Ошибка при получении методов" });
