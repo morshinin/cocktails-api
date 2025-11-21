@@ -28,12 +28,14 @@ router.get("/:id", async (req, res) => {
 
 // Добавить компонент
 router.post("/", async (req, res) => {
-  const { name, category, description, image } = req.body;
+  const { name, category, description, image, venueId } = req.body;
 
-  const exists = await Component.findOne({ name });
+  if (!venueId) return res.status(400).json({ error: "Venue ID is required" });
+
+  const exists = await Component.findOne({ name, venueId });
   if (exists) return res.status(409).json({ error: "Компонент уже существует" });
 
-  const component = new Component({ name, category, description, image });
+  const component = new Component({ name, category, description, image, venueId });
   await component.save();
   res.json(component);
 });
