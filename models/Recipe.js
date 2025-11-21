@@ -11,7 +11,7 @@ const recipeSchema = new mongoose.Schema({
   glass: { type: String },
   method: { type: [String] },
   components: [componentSchema],
-  decoration: { type: String },
+  decoration: { type: [String] },
   category: {
     type: String,
     enum: ["Classic", "Signature"],
