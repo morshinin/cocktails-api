@@ -20,14 +20,15 @@ router.get("/", async (req, res) => {
 // Добавить метод
 router.post("/", async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, venueId } = req.body;
     if (!name) return res.status(400).json({ message: "Введите название" });
+    if (!venueId) return res.status(400).json({ message: "Venue ID is required" });
 
-    const existing = await Method.findOne({ name: new RegExp(`^${name}$`, "i") });
+    const existing = await Method.findOne({ name: new RegExp(`^${name}$`, "i"), venueId });
     if (existing)
       return res.status(409).json({ message: "Такой метод уже существует" });
 
-    const newMethod = new Method({ name });
+    const newMethod = new Method({ name, venueId });
     await newMethod.save();
     res.status(201).json(newMethod);
   } catch (e) {
