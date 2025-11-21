@@ -9,6 +9,7 @@ const recipesRouter = require("./routes/recipes");
 const instructionsRouter = require("./routes/instructions");
 const authRouter = require("./routes/auth");
 const glassesRouter = require("./routes/glasses");
+const decorationsRouter = require("./routes/decorations");
 
 const venueRouter = require("./routes/venues");
 const organizationsRouter = require("./routes/organizations");
@@ -32,6 +33,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/upload", uploadRouter);
 app.use("/api/methods", authenticate, methodsRouter);
 app.use("/api/glasses", authenticate, glassesRouter);
+app.use("/api/decorations", authenticate, decorationsRouter);
 app.use("/api/organizations", authenticate, organizationsRouter);
 app.use("/api/venues", venueRouter);
 app.use("/api", authRouter);
