@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema({
       "head_chef",
       "cook",
       "cleaner",
+      "waiter",
       "guest"
     ],
     default: "guest"
