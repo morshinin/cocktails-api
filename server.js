@@ -38,6 +38,8 @@ app.use("/api/organizations", authenticate, organizationsRouter);
 app.use("/api/venues", venueRouter);
 app.use("/api", authRouter);
 app.use("/api/users", require("./routes/users"));
+app.use("/api/dishes", require("./routes/dishes"));
+app.use("/api/ingredients", require("./routes/ingredients"));
 
 mongoose.connect(MONGO_URL, {
   dbName: "cocktails",
