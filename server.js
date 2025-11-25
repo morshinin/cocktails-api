@@ -41,6 +41,7 @@ app.use("/api/users", require("./routes/users"));
 app.use("/api/dishes", require("./routes/dishes"));
 app.use("/api/ingredients", require("./routes/ingredients"));
 app.use("/api/shifts", require("./routes/shifts"));
+app.use("/api/categories", require("./routes/categories"));
 
 mongoose.connect(MONGO_URL, {
   dbName: "cocktails",
