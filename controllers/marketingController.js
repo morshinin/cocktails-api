@@ -4,7 +4,11 @@ const MerchItem = require('../models/MerchItem');
 // --- Regular Guests ---
 exports.getGuests = async (req, res) => {
     try {
-        const guests = await RegularGuest.find({ venueId: req.user.venueId });
+        const { venueId } = req.query;
+        if (!venueId) {
+            return res.status(400).json({ message: 'venueId is required' });
+        }
+        const guests = await RegularGuest.find({ venueId });
         res.json(guests);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,8 +17,13 @@ exports.getGuests = async (req, res) => {
 
 exports.createGuest = async (req, res) => {
     const guest = new RegularGuest({
-        ...req.body,
-        venueId: req.user.venueId
+        name: req.body.name,
+        contacts: req.body.contacts,
+        preferences: req.body.preferences,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        birthday: req.body.birthday,
+        venueId: req.body.venueId
     });
     try {
         const newGuest = await guest.save();
@@ -26,9 +35,16 @@ exports.createGuest = async (req, res) => {
 
 exports.updateGuest = async (req, res) => {
     try {
-        const guest = await RegularGuest.findOneAndUpdate(
-            { _id: req.params.id, venueId: req.user.venueId },
-            req.body,
+        const guest = await RegularGuest.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                contacts: req.body.contacts,
+                preferences: req.body.preferences,
+                description: req.body.description,
+                imageUrl: req.body.imageUrl,
+                birthday: req.body.birthday
+            },
             { new: true }
         );
         if (!guest) return res.status(404).json({ message: 'Guest not found' });
@@ -40,7 +56,7 @@ exports.updateGuest = async (req, res) => {
 
 exports.deleteGuest = async (req, res) => {
     try {
-        const guest = await RegularGuest.findOneAndDelete({ _id: req.params.id, venueId: req.user.venueId });
+        const guest = await RegularGuest.findByIdAndDelete(req.params.id);
         if (!guest) return res.status(404).json({ message: 'Guest not found' });
         res.json({ message: 'Guest deleted' });
     } catch (err) {
