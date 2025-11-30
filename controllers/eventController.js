@@ -4,7 +4,11 @@ const Event = require('../models/Event');
 // --- DJs ---
 exports.getDJs = async (req, res) => {
     try {
-        const djs = await DJ.find({ venueId: req.user.venueId });
+        const { venueId } = req.query;
+        if (!venueId) {
+            return res.status(400).json({ message: 'venueId is required' });
+        }
+        const djs = await DJ.find({ venueId });
         res.json(djs);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,8 +17,13 @@ exports.getDJs = async (req, res) => {
 
 exports.createDJ = async (req, res) => {
     const dj = new DJ({
-        ...req.body,
-        venueId: req.user.venueId
+        name: req.body.name,
+        genre: req.body.genre,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        socialLinks: req.body.socialLinks,
+        contacts: req.body.contacts,
+        venueId: req.body.venueId
     });
     try {
         const newDJ = await dj.save();
@@ -26,9 +35,16 @@ exports.createDJ = async (req, res) => {
 
 exports.updateDJ = async (req, res) => {
     try {
-        const dj = await DJ.findOneAndUpdate(
-            { _id: req.params.id, venueId: req.user.venueId },
-            req.body,
+        const dj = await DJ.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                genre: req.body.genre,
+                description: req.body.description,
+                imageUrl: req.body.imageUrl,
+                socialLinks: req.body.socialLinks,
+                contacts: req.body.contacts
+            },
             { new: true }
         );
         if (!dj) return res.status(404).json({ message: 'DJ not found' });
@@ -40,7 +56,7 @@ exports.updateDJ = async (req, res) => {
 
 exports.deleteDJ = async (req, res) => {
     try {
-        const dj = await DJ.findOneAndDelete({ _id: req.params.id, venueId: req.user.venueId });
+        const dj = await DJ.findByIdAndDelete(req.params.id);
         if (!dj) return res.status(404).json({ message: 'DJ not found' });
         res.json({ message: 'DJ deleted' });
     } catch (err) {
