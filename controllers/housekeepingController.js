@@ -6,7 +6,11 @@ const CleaningSchedule = require('../models/CleaningSchedule');
 // --- Zones ---
 exports.getZones = async (req, res) => {
     try {
-        const zones = await Zone.find({ venueId: req.user.venueId });
+        const { venueId } = req.query;
+        if (!venueId) {
+            return res.status(400).json({ message: 'venueId is required' });
+        }
+        const zones = await Zone.find({ venueId });
         res.json(zones);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -15,8 +19,9 @@ exports.getZones = async (req, res) => {
 
 exports.createZone = async (req, res) => {
     const zone = new Zone({
-        ...req.body,
-        venueId: req.user.venueId
+        name: req.body.name,
+        description: req.body.description,
+        venueId: req.body.venueId
     });
     try {
         const newZone = await zone.save();
@@ -26,11 +31,15 @@ exports.createZone = async (req, res) => {
     }
 };
 
+
 exports.updateZone = async (req, res) => {
     try {
-        const zone = await Zone.findOneAndUpdate(
-            { _id: req.params.id, venueId: req.user.venueId },
-            req.body,
+        const zone = await Zone.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                description: req.body.description
+            },
             { new: true }
         );
         if (!zone) return res.status(404).json({ message: 'Zone not found' });
@@ -42,7 +51,7 @@ exports.updateZone = async (req, res) => {
 
 exports.deleteZone = async (req, res) => {
     try {
-        const zone = await Zone.findOneAndDelete({ _id: req.params.id, venueId: req.user.venueId });
+        const zone = await Zone.findByIdAndDelete(req.params.id);
         if (!zone) return res.status(404).json({ message: 'Zone not found' });
         res.json({ message: 'Zone deleted' });
     } catch (err) {
