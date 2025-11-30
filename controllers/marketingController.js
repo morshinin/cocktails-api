@@ -67,7 +67,11 @@ exports.deleteGuest = async (req, res) => {
 // --- Merch Items ---
 exports.getMerch = async (req, res) => {
     try {
-        const merch = await MerchItem.find({ venueId: req.user.venueId });
+        const { venueId } = req.query;
+        if (!venueId) {
+            return res.status(400).json({ message: 'venueId is required' });
+        }
+        const merch = await MerchItem.find({ venueId });
         res.json(merch);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -76,8 +80,12 @@ exports.getMerch = async (req, res) => {
 
 exports.createMerch = async (req, res) => {
     const merch = new MerchItem({
-        ...req.body,
-        venueId: req.user.venueId
+        name: req.body.name,
+        price: req.body.price,
+        description: req.body.description,
+        stock: req.body.stock,
+        imageUrl: req.body.imageUrl,
+        venueId: req.body.venueId
     });
     try {
         const newMerch = await merch.save();
@@ -89,9 +97,15 @@ exports.createMerch = async (req, res) => {
 
 exports.updateMerch = async (req, res) => {
     try {
-        const merch = await MerchItem.findOneAndUpdate(
-            { _id: req.params.id, venueId: req.user.venueId },
-            req.body,
+        const merch = await MerchItem.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                price: req.body.price,
+                description: req.body.description,
+                stock: req.body.stock,
+                imageUrl: req.body.imageUrl
+            },
             { new: true }
         );
         if (!merch) return res.status(404).json({ message: 'Merch item not found' });
@@ -103,7 +117,7 @@ exports.updateMerch = async (req, res) => {
 
 exports.deleteMerch = async (req, res) => {
     try {
-        const merch = await MerchItem.findOneAndDelete({ _id: req.params.id, venueId: req.user.venueId });
+        const merch = await MerchItem.findByIdAndDelete(req.params.id);
         if (!merch) return res.status(404).json({ message: 'Merch item not found' });
         res.json({ message: 'Merch item deleted' });
     } catch (err) {
