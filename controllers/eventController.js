@@ -67,8 +67,14 @@ exports.deleteDJ = async (req, res) => {
 // --- Events ---
 exports.getEvents = async (req, res) => {
     try {
-        const { date, month, year } = req.query;
-        let query = { venueId: req.user.venueId };
+        const { date, month, year, venueId: queryVenueId } = req.query;
+        const venueId = req.user.selectedVenue || queryVenueId;
+
+        if (!venueId) {
+            return res.status(400).json({ message: 'No venue selected or venueId provided' });
+        }
+
+        let query = { venueId };
 
         if (date) {
             const startOfDay = new Date(date);
@@ -90,22 +96,48 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
+    console.log('📝 Creating event...');
+    console.log('Request body:', req.body);
+    console.log('User:', { selectedVenue: req.user?.selectedVenue, organizationId: req.user?.organizationId });
+
+    // Get venueId from selectedVenue or from request body
+    const venueId = req.user.selectedVenue || req.body.venueId;
+    const organizationId = req.user.organizationId;
+
+    if (!venueId) {
+        console.log('❌ No venue selected');
+        return res.status(400).json({ message: 'No venue selected or venueId provided' });
+    }
+
     const event = new Event({
         ...req.body,
-        venueId: req.user.venueId
+        venueId,
+        organizationId
     });
+
+    console.log('Event to save:', event);
+
     try {
         const newEvent = await event.save();
+        console.log('✅ Event created:', newEvent._id);
         res.status(201).json(newEvent);
     } catch (err) {
+        console.error('❌ Error saving event:', err.message);
+        console.error('Validation errors:', err.errors);
         res.status(400).json({ message: err.message });
     }
 };
 
 exports.updateEvent = async (req, res) => {
     try {
+        const venueId = req.user.selectedVenue || req.body.venueId;
+
+        if (!venueId) {
+            return res.status(400).json({ message: 'No venue selected or venueId provided' });
+        }
+
         const event = await Event.findOneAndUpdate(
-            { _id: req.params.id, venueId: req.user.venueId },
+            { _id: req.params.id, venueId },
             req.body,
             { new: true }
         );
@@ -118,7 +150,13 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
     try {
-        const event = await Event.findOneAndDelete({ _id: req.params.id, venueId: req.user.venueId });
+        const venueId = req.user.selectedVenue || req.body.venueId;
+
+        if (!venueId) {
+            return res.status(400).json({ message: 'No venue selected or venueId provided' });
+        }
+
+        const event = await Event.findOneAndDelete({ _id: req.params.id, venueId });
         if (!event) return res.status(404).json({ message: 'Event not found' });
         res.json({ message: 'Event deleted' });
     } catch (err) {
