@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
+  name: { type: String },
   role: {
     type: String,
     enum: [
@@ -21,6 +22,9 @@ const UserSchema = new mongoose.Schema({
   },
   organizationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organization" },
   invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  emailVerified: { type: Boolean, default: false },
+  emailVerificationToken: { type: String },
+  emailVerificationExpires: { type: Date },
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);
