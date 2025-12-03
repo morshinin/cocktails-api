@@ -13,6 +13,10 @@ const dishSchema = new mongoose.Schema({
     ingredients: [ingredientSchema],
     price: { type: Number },
     image: { type: String },
+    method: { type: String },
+    allergens: [{ type: String }],
+    notes: { type: String },
+    pairing: { type: String },
     venueId: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
 });
 
