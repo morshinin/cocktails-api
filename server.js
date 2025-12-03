@@ -45,6 +45,7 @@ app.use("/api/categories", require("./routes/categories"));
 app.use("/api/housekeeping", require("./routes/housekeeping"));
 app.use("/api/reservations", require("./routes/reservations"));
 app.use("/api/events", require("./routes/events"));
+app.use("/api/bar-counters", require("./routes/barCounters"));
 app.use("/api/marketing", require("./routes/marketing"));
 
 mongoose.connect(MONGO_URL, {
