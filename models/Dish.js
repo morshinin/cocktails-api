@@ -11,10 +11,10 @@ const dishSchema = new mongoose.Schema({
     description: { type: String },
     category: { type: String }, // e.g., "Appetizer", "Main Course", "Dessert"
     ingredients: [ingredientSchema],
-    price: { type: Number },
     image: { type: String },
     method: { type: String },
     allergens: [{ type: String }],
+    upsells: [{ type: String }],
     notes: { type: String },
     pairing: { type: String },
     venueId: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
