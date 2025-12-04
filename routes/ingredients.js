@@ -25,6 +25,20 @@ router.post("/", async (req, res) => {
     }
 });
 
+// PUT update an ingredient
+router.put("/:id", async (req, res) => {
+    try {
+        const ingredient = await Ingredient.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(ingredient);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 // DELETE an ingredient
 router.delete("/:id", async (req, res) => {
     try {
