@@ -25,6 +25,20 @@ router.post("/", async (req, res) => {
     }
 });
 
+// PUT update a dish
+router.put("/:id", async (req, res) => {
+    try {
+        const dish = await Dish.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(dish);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 // DELETE a dish
 router.delete("/:id", async (req, res) => {
     try {
