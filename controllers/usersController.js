@@ -4,18 +4,15 @@ const bcrypt = require("bcryptjs");
 // Get all users for the organization
 exports.getUsers = async (req, res) => {
     try {
-        // Assuming the authenticated user is attached to req.user
-        // and we want to list users in the same organization
-        // If user is developer, maybe list all? For now, stick to organization scope.
+        const { organizationId } = req.query;
 
-        // TODO: If we want to support multi-tenancy strictly, we should filter by organizationId
-        // But currently the User model has organizationId.
+        // Build filter
+        const filter = {};
+        if (organizationId) {
+            filter.organizationId = organizationId;
+        }
 
-        // If the requester is an owner or manager, they can see users.
-        // For now, let's return all users if the requester has permission.
-        // We'll rely on middleware for permission check.
-
-        const users = await User.find().select("-passwordHash");
+        const users = await User.find(filter).select("-passwordHash");
         res.json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -38,8 +35,7 @@ exports.createUser = async (req, res) => {
             email,
             passwordHash,
             role: role || "guest",
-            // Assign to same organization as creator? Or passed in body?
-            // For now, let's assume simple creation.
+            organizationId: req.user.organizationId,
         });
 
         await user.save();
