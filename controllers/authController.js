@@ -85,6 +85,7 @@ module.exports.login = async (req, res) => {
       role: user.role,
       organizationId: user.organizationId,
       name: user.name,
+      photoUrl: user.photoUrl,
     }
   });
 };
@@ -101,6 +102,7 @@ module.exports.getProfile = async (req, res) => {
         role: user.role,
         organizationId: user.organizationId,
         name: user.name,
+        photoUrl: user.photoUrl,
       },
       organization,
       venues
@@ -172,4 +174,37 @@ module.exports.resendVerification = async (req, res) => {
     res.status(500).json({ message: "Error resending verification email" });
   }
 };
+
+module.exports.updateProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    const { name, email, password, photoUrl } = req.body;
+
+    // Update allowed fields
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (photoUrl !== undefined) user.photoUrl = photoUrl;
+
+    // Update password if provided
+    if (password) {
+      user.passwordHash = await bcrypt.hash(password, 10);
+    }
+
+    await user.save();
+
+    res.json({
+      user: {
+        email: user.email,
+        role: user.role,
+        organizationId: user.organizationId,
+        name: user.name,
+        photoUrl: user.photoUrl,
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error updating profile" });
+  }
+};
+
 
