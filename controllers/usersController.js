@@ -59,10 +59,15 @@ exports.createUser = async (req, res) => {
 // Update user (role)
 exports.updateUser = async (req, res) => {
     try {
-        const { role } = req.body;
+        const { role, name, email } = req.body;
+        const updates = {};
+        if (role) updates.role = role;
+        if (name) updates.name = name;
+        if (email) updates.email = email;
+
         const user = await User.findByIdAndUpdate(
             req.params.id,
-            { role },
+            updates,
             { new: true }
         ).select("-passwordHash");
 
